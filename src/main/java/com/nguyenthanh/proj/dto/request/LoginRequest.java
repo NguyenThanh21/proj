@@ -2,7 +2,6 @@ package com.nguyenthanh.proj.dto.request;
 
 import lombok.*;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

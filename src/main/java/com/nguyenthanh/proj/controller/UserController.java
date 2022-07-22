@@ -11,9 +11,9 @@ import com.nguyenthanh.proj.model.User;
 import com.nguyenthanh.proj.repository.UserRepository;
 import com.nguyenthanh.proj.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -67,7 +66,7 @@ public class UserController {
 
         ResponseObject ro = new ResponseObject();
 
-        if (!passwordEncoder.matches( dto.getOldPassword(), currentUser.getPassword())) {
+        if (!passwordEncoder.matches(dto.getOldPassword(), currentUser.getPassword())) {
             result.rejectValue("oldPassword", "error.oldPassword", "Mật khẩu cũ không đúng");
         }
 
@@ -78,7 +77,7 @@ public class UserController {
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             List<FieldError> errorsList = result.getFieldErrors();
-            for (FieldError error : errorsList ) {
+            for (FieldError error : errorsList) {
                 errors.put(error.getField(), error.getDefaultMessage());
             }
             ro.setErrorMessages(errors);
@@ -90,6 +89,14 @@ public class UserController {
         }
 
         return ro;
+    }
+
+    @GetMapping("/listUser")
+    public ResponseEntity<Iterable<User>> listUser () throws Exception {
+        //List<User> currentUser = userService.getAllUser();
+        //ListUserResponse listUserResponse = userService.listUser();
+
+        return new ResponseEntity<>(userService.getAllUser(), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteUser/{id}")
@@ -105,7 +112,7 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("User deleted successfully!"));
     }
 
-    public User getSessionUser(HttpServletRequest request) {
+    public User getSessionUser (HttpServletRequest request) {
         return (User) request.getSession().getAttribute("loggedInUser");
     }
 
